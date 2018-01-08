@@ -1,13 +1,18 @@
-FROM frolvlad/alpine-python3
-
+FROM debian:stable
 MAINTAINER Antonio Manuel Jiménez Martínez <homomagnus@gmail.com>
-WORKDIR /app
 
-RUN apk update && apk upgrade
-RUN apk add git
+RUN apt-get update && apt-get -y install apache2 && apt-get clean && rm -rf /var/lib/apt/lists/*
+RUN /usr/sbin/a2dismod 'mpm_*' && /usr/sbin/a2enmod mpm_prefork
+RUN apt-get update && apt-get -y install php php-mysql libapache2-mod-php && apt-get clean && rm -r /var/lib/apt/lists/*
 
-RUN pip3 install flask pytest boto3
-COPY contenedores/service.py /app
+ENV APACHE_RUN_USER www-data
+ENV APACHE_RUN_GROUP www-data
+ENV APACHE_LOG_DIR /var/log/apache2
 
-ENTRYPOINT ["python"]
-CMD ["service.py"]
+RUN /usr/sbin/a2ensite default-ssl
+RUN /usr/sbin/a2enmod ssl
+
+EXPOSE 80
+EXPOSE 443
+
+CMD ["/usr/sbin/apache2ctl", "-D", "FOREGROUND"]
