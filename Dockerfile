@@ -15,4 +15,7 @@ RUN /usr/sbin/a2enmod ssl
 EXPOSE 80
 EXPOSE 443
 
+RUN rm /var/www/html/index.html
+COPY contenedores/index.php /var/www/html/
+
 CMD ["/usr/sbin/apache2ctl", "-D", "FOREGROUND"]
