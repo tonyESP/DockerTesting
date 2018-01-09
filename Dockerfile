@@ -17,5 +17,6 @@ EXPOSE 443
 
 RUN rm /var/www/html/index.html
 COPY contenedores/index.php /var/www/html/
+COPY contenedores/index.php /var/www/html/status/
 
 CMD ["/usr/sbin/apache2ctl", "-D", "FOREGROUND"]
